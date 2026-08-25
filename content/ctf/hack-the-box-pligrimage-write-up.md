@@ -165,7 +165,7 @@ Result:
 
 Let’s decode it with [CyberChef](https://gchq.github.io/CyberChef/):
 
-```
+```text
 root:x:0:0:root:/root:/bin/bash
 daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
 bin:x:2:2:bin:/bin:/usr/sbin/nologin
@@ -237,7 +237,7 @@ scp pspy64 emily@10.10.11.219:/tmp
 
 On the target machine, make the pspy64 binary executable and then run it by tapping:
 
-```
+```text
 chmod u+x pspy64
 ./pspy64
 ```

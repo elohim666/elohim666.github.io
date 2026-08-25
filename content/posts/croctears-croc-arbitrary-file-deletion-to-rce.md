@@ -40,7 +40,7 @@ paths and `../` traversal both work. When the victim receives into their home
 directory, this can be chained to remote code execution by deleting and then
 sending files like `.bashrc`.
 
-```
+```text
 Affected:    croc 10.0.13 – 11.0.2
 Fixed in:    11.0.3  (commit c0d51f0, PR #1232)
 CVSS 3.1:    AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:H/A:H  ->  8.1 (High)
@@ -169,7 +169,7 @@ prompt.
 
 ## |=---[ Disclosure Timeline ]
 
-```
+```text
 2026-08-10  02:07:00 GMT+2   reported via GitHub Security Advisory
 2026-08-10  02:53:00 GMT+2   fix committed (c0d51f0)
 2026-08-10  02:55:57 GMT+2   v11.0.3 published

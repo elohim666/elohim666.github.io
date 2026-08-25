@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-  document.querySelectorAll('.highlight').forEach(function(block) {
+  document.querySelectorAll('.highlight, article > pre').forEach(function(block) {
     var btn = document.createElement('button');
     btn.className = 'copy-btn';
     btn.textContent = '[copy]';

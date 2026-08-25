@@ -105,7 +105,7 @@ smb: /.backup/> get mail
 
 The content of **mail:**
 
-```
+```text
 From jdavis@gofer.htb  Fri Oct 28 20:29:30 2022
 Return-Path: <jdavis@gofer.htb>
 X-Original-To: tbuckley@gofer.htb
@@ -150,7 +150,7 @@ I’ve had a look at the source-code and tried to find some interesting subdirec
 
 How about **subdomains**?
 
-```
+```text
 ffuf -w /usr/share/wordlists/seclists/Discovery/DNS/bitquark-subdomains-top100000.txt -u http://FUZZ.gofer.htb/ -H "Host: gofer.htb" -mc 200
 ```
 
@@ -234,7 +234,7 @@ I found [this](https://0xdf.gitlab.io/2020/02/01/htb-re.html#prepare-document) o
 
 The use of **“*0/*”** worked for me, and here is the finale crafted payload:
 
-```
+```text
 _HELO kali
 MAIL FROM:kali@gofer.htb
 RCPT TO:jhudson@gofer.htb

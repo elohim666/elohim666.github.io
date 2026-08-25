@@ -131,7 +131,10 @@ code {
   position: relative;
 }
 
-.highlight pre {
+/* Unlabeled fences render as a bare <pre> with no .highlight wrapper,
+   so they need the same rule or the UA monospace default leaks through. */
+.highlight pre,
+article > pre {
   padding: 0 0 0 4ch;
   overflow-x: auto;
   line-height: 1.4;
@@ -139,9 +142,16 @@ code {
   font-size: 0.6em;
   background: transparent;
   border: none;
+  font-family: inherit;
 }
 
-.highlight pre code {
+article > pre {
+  margin: 0.75rem 0 1.25rem;
+  position: relative;
+}
+
+.highlight pre code,
+article > pre code {
   color: var(--fg);
   background: transparent;
   padding: 0;

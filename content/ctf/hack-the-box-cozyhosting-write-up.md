@@ -22,7 +22,7 @@ export ip=10.10.11.230
 
 I also like to check if the target is up by pinging it! (PS: The target may block the ICMP packets, which means that the target may be up without responding to the ping we send).
 
-```
+```text
 ping -c 3 $ip
 PING 10.10.11.230 (10.10.11.230) 56(84) bytes of data.
 64 bytes from 10.10.11.230: icmp_seq=1 ttl=63 time=117 ms
@@ -37,7 +37,7 @@ PING 10.10.11.230 (10.10.11.230) 56(84) bytes of data.
 
 Almost everything starts with Nmap:
 
-```
+```text
 nmap -T4 -sV $ip -n
 Starting Nmap 7.93 ( https://nmap.org ) at 2023-09-07 16:23 EDT
 Nmap scan report for 10.10.11.230
@@ -95,7 +95,7 @@ I tried it with dirsearch and I founded something interesting:
 
 Here is the command:
 
-```
+```text
 python3 dirsearch.py -e txt,php,html -u http://cozyhosting.htb:80/ -w /usr/share/seclists/Discovery/Web-Content/spring-boot.txt -t 200
 ```
 
