@@ -14,10 +14,6 @@ concurrency:
   group: "pages"
   cancel-in-progress: false
 
-defaults:
-  run:
-    shell: bash
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -30,14 +26,11 @@ jobs:
           sudo dpkg -i ${{ runner.temp }}/hugo.deb
 
       - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          submodules: recursive
-          fetch-depth: 0
+        uses: actions/checkout@v5
 
       - name: Setup Pages
         id: pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
 
       - name: Build with Hugo
         env:
@@ -48,7 +41,7 @@ jobs:
           hugo --gc --minify --baseURL "${{ steps.pages.outputs.base_url }}/"
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
           path: ./public
 
@@ -61,4 +54,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
