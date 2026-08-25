@@ -13,7 +13,7 @@ html {
   background: var(--bg);
   color: var(--fg);
   font-family: 'VT323', 'Courier New', 'Fixedsys', monospace;
-  font-size: 22px;
+  font-size: 24px;
   line-height: 1.5;
 }
 
@@ -136,7 +136,7 @@ code {
   overflow-x: auto;
   line-height: 1.4;
   color: var(--fg);
-  font-size: 0.68em;
+  font-size: 0.6em;
   background: transparent;
   border: none;
 }
