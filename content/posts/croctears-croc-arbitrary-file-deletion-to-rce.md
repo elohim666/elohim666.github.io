@@ -5,7 +5,7 @@ draft: false
 tags: [croc, go, file-deletion, path-traversal, rce, cve, 0day]
 ---
 
-{{< img src="/img/croc-header.webp" path="/img/submissive-croc.png" caption="fig.0 — submissive croc" >}}
+{{< img src="/img/croc-header.webp" path="/img/croc-header.webp" caption="fig.0 — submissive croc" >}}
 
 {{< note >}}
 The fix landed in under an hour (PR #1232), but that was a silent fix. The
@@ -140,13 +140,13 @@ is sourced and the payload runs as the victim.
 
 ### Screenshots
 
-{{< img src="/img/croc-01-delete-bashrc.png" path="transfer-1/croc-marked-files.txt" caption="fig.1 — attacker deletes .bashrc" >}}
+{{< img src="/img/croc-01-delete-bashrc.png" path="/img/croc-01-delete-bashrc.png" caption="fig.1 — attacker deletes .bashrc" >}}
 
-{{< img src="/img/croc-02-plant-bashrc.png" path="transfer-2/.bashrc" caption="fig.2 — attacker sends new .bashrc" >}}
+{{< img src="/img/croc-02-plant-bashrc.png" path="/img/croc-02-plant-bashrc.png" caption="fig.2 — attacker sends new .bashrc" >}}
 
-{{< img src="/img/croc-03-delivery.png" path="victim/$HOME" caption="fig.3 — victim gets its .bashrc file replaced" >}}
+{{< img src="/img/croc-03-delivery.png" path="/img/croc-03-delivery.png" caption="fig.3 — victim gets its .bashrc file replaced" >}}
 
-{{< img src="/img/croc-04-execution.png" path="attacker/nc -lvnp 4444" caption="fig.4 — next time the victim opens a shell, the attacker gets one too :D" >}}
+{{< img src="/img/croc-04-execution.png" path="/img/croc-04-execution.png" caption="fig.4 — next time the victim opens a shell, the attacker gets one too :D" >}}
 
 {{< note >}}
 The victim must run croc from $HOME so that its .bashrc is the one replaced —
