@@ -9,6 +9,10 @@
 
 {{ .Content }}
 
+{{ with .Params.medium_url }}
+<div class="repost">originally published on <a href="{{ . }}" rel="nofollow">medium</a></div>
+{{ end }}
+
 <div class="sep">- - - EOF - - -</div>
 
 </article>

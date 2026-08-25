@@ -2,7 +2,8 @@
 title: "SOC Lab At Home"
 date: 2024-03-11
 draft: false
-tags: [soc, blue-team, homelab, detection]
+tags: [soc, blue-team, homelab, detection, wazuh, thehive, cortex, misp, snort, cuckoo, splunk, active-directory, kerberoasting]
+medium_url: "https://medium.com/@anassouiri07/soc-lab-at-home-b8a5f09e9ee1"
 ---
 
 In this article, I will be presenting my SOC analyst home lab. I built it in order to freely practice and experiment diver cybersecurity concepts, tools and technologies.

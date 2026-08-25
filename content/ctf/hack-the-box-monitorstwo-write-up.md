@@ -2,7 +2,8 @@
 title: "Hack The Box — MonitorsTwo write-up"
 date: 2023-09-01
 draft: false
-tags: [ctf, htb, writeup]
+tags: [ctf, htb, writeup, linux, cacti, cve-2022-46169, docker, container-escape]
+medium_url: "https://medium.com/@anassouiri07/hack-the-box-monitorstwo-write-up-5fcdfcf2e70c"
 ---
 
 This is a write-up for the “MonitorsTwo” machine on [HackTheBox](http://www.hackthebox.com).

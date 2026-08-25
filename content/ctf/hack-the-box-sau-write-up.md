@@ -2,7 +2,8 @@
 title: "Hack The Box — Sau write-up"
 date: 2023-07-18
 draft: false
-tags: [ctf, htb, writeup]
+tags: [ctf, htb, writeup, linux, ssrf, command-injection, maltrail, request-baskets, sudo]
+medium_url: "https://medium.com/@anassouiri07/hack-the-box-sau-write-up-4fdba1d2bc2f"
 ---
 
 This is my write-up for the “Sau” machine on [HackTheBox](http://www.hackthebox.com).

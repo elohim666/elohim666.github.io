@@ -2,7 +2,8 @@
 title: "Hack The Box — Gofer write-up"
 date: 2023-10-31
 draft: false
-tags: [ctf, htb, writeup]
+tags: [ctf, htb, writeup, linux, ssrf, gopher, smtp, phishing, setuid]
+medium_url: "https://medium.com/@anassouiri07/hack-the-box-gofer-write-up-888ac26abc20"
 ---
 
 This is a write-up for the “Gofer” machine on [HackTheBox](http://www.hackthebox.com).

@@ -3,6 +3,7 @@ title: "CrocTears: or How I Found an Arbitrary File Deletion That Can Be Escalat
 date: 2026-08-12
 draft: false
 tags: [croc, go, file-deletion, path-traversal, rce, cve, 0day]
+medium_url: "https://medium.com/@anassouiri07/croctears-or-how-i-found-an-arbitrary-file-deletion-that-can-be-escalated-to-rce-in-croc-0a4146a94454"
 ---
 
 {{< img src="/img/croc-header.webp" path="/img/croc-header.webp" caption="fig.0 — submissive croc" >}}
@@ -48,6 +49,8 @@ CVSS 3.1:    AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:H/A:H  ->  8.1 (High)
 ## |=---[ Background Knowledge ]
 
 croc lets two machines transfer files through a relay.
+
+{{< img src="/img/croc-demo.gif" path="/img/croc-demo.gif" caption="fig.1 — croc in action: sender on the left, receiver on the right" >}}
 
 The detail that matters: **received files land in the CWD, and the sender fully
 controls their names and contents.**
@@ -140,13 +143,13 @@ is sourced and the payload runs as the victim.
 
 ### Screenshots
 
-{{< img src="/img/croc-01-delete-bashrc.png" path="/img/croc-01-delete-bashrc.png" caption="fig.1 — attacker deletes .bashrc" >}}
+{{< img src="/img/croc-01-delete-bashrc.png" path="/img/croc-01-delete-bashrc.png" caption="fig.2 — attacker deletes .bashrc" >}}
 
-{{< img src="/img/croc-02-plant-bashrc.png" path="/img/croc-02-plant-bashrc.png" caption="fig.2 — attacker sends new .bashrc" >}}
+{{< img src="/img/croc-02-plant-bashrc.png" path="/img/croc-02-plant-bashrc.png" caption="fig.3 — attacker sends new .bashrc" >}}
 
-{{< img src="/img/croc-03-delivery.png" path="/img/croc-03-delivery.png" caption="fig.3 — victim gets its .bashrc file replaced" >}}
+{{< img src="/img/croc-03-delivery.png" path="/img/croc-03-delivery.png" caption="fig.4 — victim gets its .bashrc file replaced" >}}
 
-{{< img src="/img/croc-04-execution.png" path="/img/croc-04-execution.png" caption="fig.4 — next time the victim opens a shell, the attacker gets one too :D" >}}
+{{< img src="/img/croc-04-execution.png" path="/img/croc-04-execution.png" caption="fig.5 — next time the victim opens a shell, the attacker gets one too :D" >}}
 
 {{< note >}}
 The victim must run croc from $HOME so that its .bashrc is the one replaced —

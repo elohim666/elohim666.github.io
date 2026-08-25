@@ -2,7 +2,8 @@
 title: "Hack The Box — Pligrimage write-up"
 date: 2023-07-19
 draft: false
-tags: [ctf, htb, writeup]
+tags: [ctf, htb, writeup, linux, git-dumper, imagemagick, cve-2022-44268, binwalk, file-read]
+medium_url: "https://medium.com/@anassouiri07/hack-the-box-pligrimage-write-up-bb04e6381bc6"
 ---
 
 This is a write-up for the “Pilgrimage” machine on [HackTheBox](http://www.hackthebox.com).
