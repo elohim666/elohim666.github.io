@@ -1,0 +1,340 @@
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg:        #0a0a0a;
+  --fg:        #aaaaaa;
+  --fg-dim:    #505050;
+  --fg-bright: #cccccc;
+  --border:    #222222;
+  --art-font:  'Courier New', 'Fixedsys', monospace;
+}
+
+html {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: 'VT323', 'Courier New', 'Fixedsys', monospace;
+  font-size: 22px;
+  line-height: 1.5;
+}
+
+body {
+  width: 60%;
+  max-width: 900px;
+  min-width: 320px;
+  margin: 0 auto;
+  padding: 0 1.5rem 3rem;
+}
+
+::selection { background: #333; color: #fff; }
+
+/* ================================================================
+   HEADER
+   ================================================================ */
+header {
+  padding: 2.5rem 0 1.5rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+header pre {
+  font-family: var(--art-font);
+  font-size: 16px;
+  line-height: 1.35;
+  color: var(--fg-dim);
+  white-space: pre;
+  overflow-x: auto;
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
+/* ================================================================
+   NAV
+   ================================================================ */
+nav {
+  margin-bottom: 2rem;
+}
+
+nav a {
+  color: var(--fg-dim);
+  text-decoration: none;
+  margin-right: 0.1rem;
+  white-space: nowrap;
+  display: inline-block;
+}
+
+nav a::before { content: '[ '; }
+nav a::after  { content: ' ]'; }
+nav a:hover, nav a.active { color: #fff; }
+
+/* ================================================================
+   LINKS
+   ================================================================ */
+a { color: var(--fg-bright); text-decoration: none; }
+a:hover { color: #fff; text-decoration: underline; }
+
+/* ================================================================
+   HEADINGS
+   ================================================================ */
+.section-header {
+  color: var(--fg-bright);
+  margin: 2rem 0 0.75rem;
+  font-weight: normal;
+}
+
+.section-header::before { content: '|=---[ '; color: var(--fg-dim); }
+.section-header::after  { content: ' ]';      color: var(--fg-dim); }
+
+h1 { font-size: 24px; font-weight: normal; color: var(--fg-bright); }
+h2 { font-size: 22px; font-weight: normal; color: var(--fg-bright); margin: 1.75rem 0 0.5rem; }
+h3 { font-size: 22px; font-weight: normal; color: var(--fg); margin: 1.25rem 0 0.5rem; }
+h3::before { content: '## '; color: var(--fg-dim); }
+
+/* ================================================================
+   POST LIST
+   ================================================================ */
+.post-list { list-style: none; }
+.post-list li { margin-bottom: 0.15rem; }
+.post-list a { color: var(--fg); }
+.post-list a:hover { color: #fff; }
+.post-list .tag { color: var(--fg-dim); }
+
+/* ================================================================
+   ARTICLE
+   ================================================================ */
+article { margin-top: 0.5rem; }
+article p { margin-bottom: 0.85rem; }
+
+article .meta {
+  color: var(--fg-dim);
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+
+article ul, article ol { margin: 0.5rem 0 0.85rem 2ch; }
+article li { margin-bottom: 0.1rem; }
+article li::marker { color: var(--fg-dim); }
+
+/* ================================================================
+   INLINE CODE
+   ================================================================ */
+code {
+  font-family: inherit;
+  color: var(--fg-bright);
+}
+
+/* ================================================================
+   CODE BLOCKS — Hugo generates .highlight > pre > code
+   ================================================================ */
+.highlight {
+  margin: 0.75rem 0 1.25rem;
+  position: relative;
+}
+
+.highlight pre {
+  padding: 0 0 0 4ch;
+  overflow-x: auto;
+  line-height: 1.4;
+  color: var(--fg);
+  font-size: 0.72em;
+  background: transparent;
+  border: none;
+}
+
+.highlight pre code {
+  color: var(--fg);
+  background: transparent;
+  padding: 0;
+}
+
+.highlight .copy-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: none;
+  border: none;
+  color: var(--fg-dim);
+  font-family: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 0.2em 0.4em;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.highlight:hover .copy-btn { opacity: 1; }
+.highlight .copy-btn:hover { color: #fff; }
+
+/* ================================================================
+   HUGO CHROMA SYNTAX COLORS — mapped to our palette
+   ================================================================ */
+.chroma .k,
+.chroma .kc,
+.chroma .kd,
+.chroma .kn,
+.chroma .kp,
+.chroma .kr,
+.chroma .kt { color: #c0a06a; }
+
+.chroma .s,
+.chroma .sa,
+.chroma .sb,
+.chroma .sc,
+.chroma .dl,
+.chroma .sd,
+.chroma .s2,
+.chroma .se,
+.chroma .sh,
+.chroma .si,
+.chroma .sx,
+.chroma .sr,
+.chroma .s1,
+.chroma .ss { color: #7a9e6a; }
+
+.chroma .c,
+.chroma .ch,
+.chroma .cm,
+.chroma .c1,
+.chroma .cs,
+.chroma .cp,
+.chroma .cpf { color: #444444; }
+
+.chroma .m,
+.chroma .mb,
+.chroma .mf,
+.chroma .mh,
+.chroma .mi,
+.chroma .il,
+.chroma .mo { color: #c4875c; }
+
+.chroma .n  { color: #aaaaaa; }
+.chroma .na { color: #aaaaaa; }
+.chroma .nb { color: #aaaaaa; }
+.chroma .nc { color: #6d8eb0; }
+.chroma .no { color: #c4875c; }
+.chroma .nd { color: #c0a06a; }
+.chroma .ni { color: #aaaaaa; }
+.chroma .ne { color: #6d8eb0; }
+.chroma .nf { color: #aaaaaa; }
+.chroma .nl { color: #aaaaaa; }
+.chroma .nn { color: #6d8eb0; }
+.chroma .nt { color: #c0a06a; }
+.chroma .nv { color: #aaaaaa; }
+
+.chroma .o,
+.chroma .ow { color: #888888; }
+
+.chroma .p  { color: #888888; }
+
+.chroma .ge { font-style: italic; }
+.chroma .gs { font-weight: normal; }
+
+.chroma .err { color: #cc6666; }
+
+/* ================================================================
+   IMAGES — terminal file-path framed
+   ================================================================ */
+.terminal-img {
+  margin: 1.25rem 0;
+  max-width: 90%;
+}
+
+.terminal-img .img-path {
+  font-family: var(--art-font);
+  font-size: 12px;
+  color: var(--fg-dim);
+  margin-bottom: 0.3rem;
+  letter-spacing: 0.5px;
+}
+
+.terminal-img img {
+  display: block;
+  max-width: 100%;
+  border: 1px solid var(--border);
+  filter: brightness(0.92);
+}
+
+.terminal-img .img-caption {
+  font-family: var(--art-font);
+  font-size: 12px;
+  color: var(--fg-dim);
+  margin-top: 0.3rem;
+  letter-spacing: 0.5px;
+}
+
+/* ================================================================
+   BLOCKQUOTE / NOTE
+   ================================================================ */
+blockquote {
+  border-left: 1px solid var(--border);
+  padding-left: 2ch;
+  color: var(--fg-dim);
+  margin: 0.75rem 0;
+}
+
+blockquote p { color: var(--fg-dim); }
+
+.note {
+  margin: 0.75rem 0;
+  color: var(--fg-dim);
+}
+
+.note::before { content: '[!] '; color: #c0a06a; }
+
+/* ================================================================
+   SEPARATOR
+   ================================================================ */
+hr { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
+.sep { color: var(--fg-dim); text-align: center; margin: 2rem 0; }
+
+/* ================================================================
+   TABLE
+   ================================================================ */
+table {
+  border-collapse: collapse;
+  margin: 0.75rem 0;
+  width: 100%;
+}
+
+th, td {
+  border: 1px solid var(--border);
+  padding: 0.25rem 0.75rem;
+  text-align: left;
+}
+
+th { color: var(--fg-bright); }
+
+/* ================================================================
+   FOOTER
+   ================================================================ */
+footer {
+  margin-top: 3rem;
+}
+
+footer pre {
+  font-family: var(--art-font);
+  font-size: 15px;
+  line-height: 1.35;
+  color: var(--fg-dim);
+  white-space: pre;
+  letter-spacing: 0.5px;
+  padding: 1.25rem 0;
+  margin: 0 0 0.75rem;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+/* ================================================================
+   RESPONSIVE
+   ================================================================ */
+@media (max-width: 900px) {
+  body { width: 80%; }
+}
+
+@media (max-width: 600px) {
+  html { font-size: 20px; }
+  body { width: 100%; padding: 0 1rem 2rem; }
+  header pre { font-size: 10px; }
+  footer pre { font-size: 10px; }
+  .terminal-img { max-width: 100%; }
+}

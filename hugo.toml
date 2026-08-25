@@ -1,0 +1,29 @@
+baseURL = "https://elohim666.github.io/"
+languageCode = "en-us"
+title = "d0th.sec"
+theme = "elfterm"
+
+[params]
+  author = "d0th.sec"
+  description = "cybersecurity research · reverse engineering · tradecraft notes"
+  pgp = "0xDEAD...BEEF"
+  contact = "stdin [at] d0th [dot] sec"
+
+[markup]
+  [markup.highlight]
+    codeFences = true
+    noClasses = false
+    lineNos = false
+    guessSyntax = true
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+
+[taxonomies]
+  tag = "tags"
+
+[outputs]
+  home = ["HTML"]
+  section = ["HTML"]
+  taxonomy = ["HTML"]
+  term = ["HTML"]

@@ -1,0 +1,14 @@
+{{ define "main" }}
+
+<h2 class="section-header">recent posts</h2>
+
+<ul class="post-list">
+  {{ range first 10 (where .Site.RegularPages "Section" "posts") }}
+  <li>
+    <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+    {{ range .Params.tags }}<span class="tag">[{{ . }}]</span> {{ end }}
+  </li>
+  {{ end }}
+</ul>
+
+{{ end }}

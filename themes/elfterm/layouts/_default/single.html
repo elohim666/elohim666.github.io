@@ -1,0 +1,16 @@
+{{ define "main" }}
+
+<article>
+
+<h1>{{ .Title }}</h1>
+<div class="meta">
+  {{ .Date.Format "2006-01-02" }}  |  author: {{ .Site.Params.author }}  |  tags: {{ delimit .Params.tags ", " }}
+</div>
+
+{{ .Content }}
+
+<div class="sep">- - - EOF - - -</div>
+
+</article>
+
+{{ end }}

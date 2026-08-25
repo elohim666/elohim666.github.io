@@ -1,0 +1,5 @@
+<div class="terminal-img">
+  {{ with .Get "path" }}<div class="img-path">┌── {{ . }} ──</div>{{ end }}
+  <img src="{{ .Get "src" }}" alt="{{ .Get "alt" | default "" }}" loading="lazy">
+  {{ with .Get "caption" }}<div class="img-caption">{{ . }}</div>{{ end }}
+</div>
