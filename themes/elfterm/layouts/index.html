@@ -11,4 +11,15 @@
   {{ end }}
 </ul>
 
+<h2 class="section-header">ctf writeups</h2>
+
+<ul class="post-list">
+  {{ range first 5 (where .Site.RegularPages "Section" "ctf") }}
+  <li>
+    <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+    {{ range .Params.tags }}<span class="tag">[{{ . }}]</span> {{ end }}
+  </li>
+  {{ end }}
+</ul>
+
 {{ end }}

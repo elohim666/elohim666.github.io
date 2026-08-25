@@ -1,6 +1,7 @@
 <nav>
   <a href="{{ "/" | relURL }}"{{ if .IsHome }} class="active"{{ end }}>.text [index]</a>
   <a href="{{ "/posts/" | relURL }}"{{ if eq .Section "posts" }} class="active"{{ end }}>.data [posts]</a>
+  <a href="{{ "/ctf/" | relURL }}"{{ if eq .Section "ctf" }} class="active"{{ end }}>.bss [ctf]</a>
   <a href="{{ "/about/" | relURL }}"{{ if eq .Title "About" }} class="active"{{ end }}>.rodata [about]</a>
   <a href="{{ "/tags/" | relURL }}"{{ if eq .Kind "taxonomy" }} class="active"{{ end }}>.symtab [tags]</a>
 </nav>
