@@ -4,7 +4,7 @@
 
 <h1>{{ .Title }}</h1>
 <div class="meta">
-  {{ .Date.Format "2006-01-02" }}  |  author: {{ .Site.Params.author }}  |  tags: {{ delimit .Params.tags ", " }}
+  {{ .Date.Format "2006-01-02" }}  |  author: {{ .Site.Params.author }}{{ with .Params.tags }}  |  tags: {{ delimit . ", " }}{{ end }}
 </div>
 
 {{ .Content }}
