@@ -1,6 +1,6 @@
-# d0th.sec
+# 3l0h1m.s3c
 
-Cybersecurity research blog. ELF/objdump-inspired terminal aesthetic.
+Security research blog. ELF/objdump-inspired terminal aesthetic.
 
 Built with [Hugo](https://gohugo.io/), deployed on GitHub Pages.
 

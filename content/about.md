@@ -4,19 +4,24 @@ title: "About"
 
 ## |=---[ whoami ]
 
-Cybersecurity researcher focused on offensive security, reverse
-engineering, and low-level tradecraft. This blog is a grimoire of
-notes, research, and things I find interesting along the way.
+elohim — security researcher. I break web apps, mobile apps, and Active
+Directory environments, and spend the rest of my time in the weeds:
+binary exploitation, exploit development, and low-level internals.
+
+This blog is a grimoire of notes, research, and things I find
+interesting along the way.
 
 ## |=---[ Focus Areas ]
 
-- Malware development and analysis
-- Windows internals and API abuse
-- Reverse engineering (x86/x64)
-- Evasion and persistence techniques
+- Web application security
+- Mobile application security
+- Active Directory attack paths
 - Binary exploitation
+- Exploit development
+- Low-level internals
 
 ## |=---[ Contact ]
 
-- PGP: `0xDEAD...BEEF`
-- Email: stdin [at] d0th [dot] sec
+- GitHub: [elohim666](https://github.com/elohim666)
+- Twitter: [@0x1nf0](https://twitter.com/0x1nf0)
+- Email: `anas.souiri@hotmail.com`

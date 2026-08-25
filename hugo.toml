@@ -1,13 +1,14 @@
 baseURL = "https://elohim666.github.io/"
 languageCode = "en-us"
-title = "d0th.sec"
+title = "3l0h1m.s3c"
 theme = "elfterm"
 
 [params]
-  author = "d0th.sec"
-  description = "cybersecurity research · reverse engineering · tradecraft notes"
-  pgp = "0xDEAD...BEEF"
-  contact = "stdin [at] d0th [dot] sec"
+  author = "elohim"
+  description = "web · mobile · active directory · binary exploitation · exploit dev · low level"
+  email = "anas.souiri@hotmail.com"
+  twitter = "0x1nf0"
+  github = "elohim666"
 
 [markup]
   [markup.highlight]

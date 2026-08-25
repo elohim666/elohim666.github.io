@@ -3,5 +3,4 @@
   <a href="{{ "/posts/" | relURL }}"{{ if eq .Section "posts" }} class="active"{{ end }}>.data [posts]</a>
   <a href="{{ "/about/" | relURL }}"{{ if eq .Title "About" }} class="active"{{ end }}>.rodata [about]</a>
   <a href="{{ "/tags/" | relURL }}"{{ if eq .Kind "taxonomy" }} class="active"{{ end }}>.symtab [tags]</a>
-  <a href="{{ "/contact/" | relURL }}"{{ if eq .Title "Contact" }} class="active"{{ end }}>.debug [contact]</a>
 </nav>
