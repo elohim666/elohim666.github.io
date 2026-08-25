@@ -18,8 +18,8 @@ html {
 }
 
 body {
-  width: 65%;
-  max-width: 960px;
+  width: 72%;
+  max-width: 1080px;
   min-width: 320px;
   margin: 0 auto;
   padding: 0 1.5rem 3rem;
@@ -136,7 +136,7 @@ code {
   overflow-x: auto;
   line-height: 1.4;
   color: var(--fg);
-  font-size: 0.77em;
+  font-size: 0.68em;
   background: transparent;
   border: none;
 }
