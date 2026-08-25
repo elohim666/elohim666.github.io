@@ -131,8 +131,9 @@ code {
   position: relative;
 }
 
-/* Unlabeled fences render as a bare <pre> with no .highlight wrapper,
-   so they need the same rule or the UA monospace default leaks through. */
+/* An unlabeled fence renders as a bare <pre> with no .highlight wrapper and
+   would otherwise miss the sizing/padding below. Font stays the UA monospace
+   default in both cases — that is deliberate, the page font is VT323. */
 .highlight pre,
 article > pre {
   padding: 0 0 0 4ch;
@@ -142,7 +143,6 @@ article > pre {
   font-size: 0.6em;
   background: transparent;
   border: none;
-  font-family: inherit;
 }
 
 article > pre {
