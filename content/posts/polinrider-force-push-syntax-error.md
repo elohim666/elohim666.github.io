@@ -18,18 +18,22 @@ works; this post assumes that context.
 
 ## |=---[ TL;DR ]
 
-Four months after the first incident, the same still-compromised developer
+Four months after the first incident, the same compromised developer
 account force-pushed the same PolinRider malware family into a different
 client repository — three malicious commits across three branches, in a
-single burst. This time, **the attacker's own payload had a JavaScript
-syntax error** in it, so every single build attempt failed before any
-malicious code could run. Production was never touched. Cleanup took under
-a day.
+single burst. This account still had write access to that specific repo
+because it was missed during the client's access revocation after the
+first incident — a repo my engagement never covered and I had no visibility
+into. This time, **the attacker's own payload had a JavaScript syntax
+error** in it, so every single build attempt failed before any malicious
+code could run. Production was never touched. Cleanup took under a day.
 
 ```text
 Date:        August 21–22, 2026
-Attacker:    same compromised account as IR-2026-001 (never remediated)
-Vector:      same developer workstation/account, still infected
+Attacker:    same compromised account as IR-2026-001
+Vector:      write access to an out-of-scope repo the client's own
+             revocation pass had missed; workstation status unknown
+             (my engagement ended after IR-2026-001)
 Impact:      0 of 3 malicious builds executed (syntax error); production
              clean throughout
 Status:      Closed
@@ -38,8 +42,9 @@ Status:      Closed
 ## |=---[ What happened ]
 
 At 06:10 UTC, three commits were force-pushed in quick succession from the
-same compromised developer account identified in the earlier incident,
-across three different branches of a different client project:
+same compromised developer account identified in the earlier incident —
+still holding collaborator access to this separate, out-of-scope project —
+across three different branches:
 
 ```text
 branch A (the developer's own branch): 686c5dc -> 8ba6a1f
@@ -58,9 +63,11 @@ The deploy platform (Vercel) attempted to build all three:
   JavaScript syntax error.
 - The build on the developer's own branch never even started — it was
   auto-blocked by a "non-team-member deployment protection" rule, because
-  that GitHub account had since lost write access after the previous
-  incident's account cleanup (it was re-added as a collaborator on this
-  *different* repo, which is how it could push here at all).
+  that GitHub account had lost write access on this repo's *team* level.
+  It could still push at all only because it remained on the repo's
+  *collaborator* list — one entry the client's post-incident-1 access
+  revocation pass missed, on a repository that was outside the scope of
+  my original engagement and that I had not audited.
 
 No malicious code executed anywhere. The repo owner noticed the failed
 checks the same day, reviewed the diff, and removed the payload.
@@ -111,10 +118,15 @@ reasons that's the wrong takeaway:
 1. **The attacker will fix the bug.** This is the same automated campaign
    from the first incident, redeployed against a second project. The next
    attempt — or the next victim — may not get a free pass from a typo.
-2. **The access that enabled this was never closed.** The force push came
-   from the *same account* compromised in April. Four months later, it
-   still had write access to a project and could still push. A syntax
-   error is not a control; it's luck.
+2. **One access-revocation entry got missed, and that was enough.** The
+   first incident's remediation plan explicitly called for revoking the
+   compromised account's access across *every* repository and rotating all
+   its credentials — that was the client's action item to close out, since
+   my engagement ended once that plan was handed off. Four months later
+   this one repo, which was never part of my original scope, still had the
+   account on its collaborator list. A syntax error is not a control; it's
+   luck. The actual control — full access revocation — existed on paper
+   and simply wasn't applied everywhere.
 3. **Attribution forgery was present again**, same trick as the first
    incident: one of the three malicious commits was crafted to look like a
    normal merge of an already-open, legitimate pull request — same parent
@@ -158,12 +170,14 @@ noticed:
 
 ## |=---[ Takeaways ]
 
-- **Closing an incident on one repository doesn't close it everywhere the
-  compromised account has access.** The first incident's remediation
-  focused on the affected project; this account still had a foothold
-  elsewhere. Whenever a developer account or workstation is confirmed
-  compromised, audit and revoke its access across *every* repository and
-  organization it touches, not just the one that got hit.
+- **A remediation plan is only as good as its follow-through.** The
+  post-incident recommendation was correct and complete on paper: revoke
+  the compromised account everywhere, not just on the repo that got hit.
+  It just wasn't fully executed — one repository outside the original
+  engagement's scope was missed on the client's side. Access revocation
+  after a compromise needs an actual checklist run against *every*
+  repository and organization the account touches, ideally verified by
+  someone other than whoever is doing the revoking.
 - **"The exploit didn't fire" is not the same as "we're safe."** Treat a
   failed malicious build exactly like a successful one for response
   purposes — full review, full IOC sweep, full access audit — because the
