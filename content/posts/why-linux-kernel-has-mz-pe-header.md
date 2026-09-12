@@ -45,7 +45,7 @@ A few things this post leans on, from scratch:
   on purpose: a PE file *starts* with a real MS-DOS header (so old DOS
   would print "This program cannot be run in DOS mode" instead of
   crashing), and at a fixed offset — byte `0x3C` — that DOS header stores
-  a 4-byte pointer called `e_lfanew`, pointing forward to where the real
+  a 4-byte pointer called `e_lfanew`, pointing forward to where the
   `PE\0\0` header begins. Everything between the DOS header and the PE
   header is technically a tiny, real, runnable DOS program (the "DOS
   stub").
@@ -92,7 +92,7 @@ $ xxd -s 0x3c -l 4 /boot/vmlinuz-linux
 0000003c: 4000 0000                                @...
 ```
 
-Little-endian `40 00 00 00` = `0x00000040`. This says: "the real PE
+Little-endian `40 00 00 00` = `0x00000040`. This says: "the PE
 header starts at offset 0x40 in this file." Every PE parser — including
 UEFI firmware's own loader — reads this field to jump straight past the
 DOS stub.
@@ -213,7 +213,7 @@ own documentation describes the goal directly:
 > masquerade as a PE/COFF image, thereby convincing EFI firmware loaders
 > to load it as an EFI executable.
 
-Annotated, based on the real structure of `arch/x86/boot/header.S`:
+Annotated, based on the structure of `arch/x86/boot/header.S`:
 
 ```asm
 	.code16
@@ -226,7 +226,7 @@ Annotated, based on the real structure of `arch/x86/boot/header.S`:
 
 #ifdef CONFIG_EFI_STUB
 	.org	0x3c
-	.long	pe_header		# e_lfanew: offset to the real PE header
+	.long	pe_header		# e_lfanew: offset to the PE header
 					# (this is the value we read above: 0x40)
 
 	.word	IMAGE_DOS_SIGNATURE	# "MZ" — must be bytes 0-1 of the file
@@ -255,7 +255,7 @@ needed for EFI compatibility — a kernel built without
 sector, no MZ/PE bytes at all.
 
 The other side of the trick, `drivers/firmware/efi/libstub/x86-stub.c`,
-is the actual code that runs *as* the EFI application: it's the real
+is the actual code that runs *as* the EFI application: it's the
 `efi_main()` entry point UEFI firmware jumps to after `LoadImage()`
 succeeds, which sets up the environment (memory map, initrd, command
 line) and hands off to the kernel's normal decompression/startup path —

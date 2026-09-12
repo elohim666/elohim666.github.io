@@ -148,7 +148,7 @@ REM Step 4: stage the malware's changes and amend, bypassing hooks
 git add .
 git commit --amend -m "%LAST_MSG%" --no-verify
 
-REM Step 5: restore the real system clock
+REM Step 5: restore the system clock
 date %OLD_DATE%
 time %OLD_TIME%
 
@@ -284,7 +284,7 @@ Layer C (pure)  -> 58-entry string table, substituted into the payload
 ## |=---[ What the payload actually does ]
 
 Once fully decoded, the payload contains no destructive logic of its own —
-it's purely a **resolver** that fetches the real second-stage payload at
+it's purely a **resolver** that fetches the second-stage payload at
 runtime from blockchain transactions. Annotated pseudocode:
 
 ```js

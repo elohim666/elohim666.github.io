@@ -84,7 +84,7 @@ call assigned to an identifier — and then, inside the payload it appended,
 declares an identifier with that exact same name again in the same scope:
 
 ```js
-// (illustrative reconstruction of the shape of the bug — the real
+// (illustrative reconstruction of the shape of the bug — the actual
 // payload is minified/obfuscated, this is the equivalent unobfuscated form)
 
 const { createRequire } = await import("node:module");
@@ -130,7 +130,7 @@ reasons that's the wrong takeaway:
 3. **Attribution forgery was present again**, same trick as the first
    incident: one of the three malicious commits was crafted to look like a
    normal merge of an already-open, legitimate pull request — same parent
-   commits, same author name and date as the real merge commit it
+   commits, same author name and date as the merge commit it
    replaced — but with a committer identity and timestamp offset that
    didn't match anything else in the repository's history. Diffing the
    forged commit against both of its parents showed both parents were
